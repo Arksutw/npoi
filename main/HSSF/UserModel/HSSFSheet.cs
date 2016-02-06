@@ -2206,16 +2206,7 @@ namespace NPOI.HSSF.UserModel
         {
             return _sheet.GetMergedRegionAt(index);
         }
-        /// <summary>
-        /// Convert HSSFFont to Font.
-        /// </summary>
-        /// <param name="font1">The font.</param>
-        /// <returns></returns>
-        public System.Drawing.Font HSSFFont2Font(HSSFFont font1)
-        {
-            return new System.Drawing.Font(font1.FontName, font1.FontHeightInPoints);
-        }
-
+        
         /// <summary>
         /// Returns cell comment for the specified row and column
         /// </summary>

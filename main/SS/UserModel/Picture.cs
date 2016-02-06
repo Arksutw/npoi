@@ -124,12 +124,6 @@ namespace NPOI.SS.UserModel
          */
         IClientAnchor GetPreferredSize(double scaleX, double scaleY);
 
-        /**
-         * Return the dimension of the embedded image in pixel
-         *
-         * @return image dimension in pixels
-         */
-        Size GetImageDimension();
 
 
 

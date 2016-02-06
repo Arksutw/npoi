@@ -743,7 +743,6 @@
     <Compile Include="POITextExtractor.cs" />
     <Compile Include="HSSF\Util\HSSFCellUtil.cs" />
     <Compile Include="HSSF\Util\HSSFRegionUtil.cs" />
-    <Compile Include="HSSF\UserModel\EscherGraphics.cs" />
     <Compile Include="HSSF\UserModel\EvaluationCycleDetector.cs" />
     <Compile Include="HSSF\UserModel\EvaluationCycleDetectorManager.cs" />
     <Compile Include="HSSF\UserModel\FontDetails.cs" />
@@ -790,7 +789,6 @@
     <Compile Include="HSSF\UserModel\HSSFTextbox.cs" />
     <Compile Include="HSSF\UserModel\HSSFWorkbook.cs" />
     <Compile Include="HSSF\UserModel\OperationEvaluatorFactory.cs" />
-    <Compile Include="HSSF\UserModel\StaticFontMetrics.cs" />
     <Compile Include="HSSF\Util\GUID.cs" />
     <Compile Include="HSSF\Util\HSSFCellRangeAddress.cs" />
     <Compile Include="HSSF\Util\HSSFColor.cs" />

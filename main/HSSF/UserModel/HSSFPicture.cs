@@ -179,43 +179,6 @@ namespace NPOI.HSSF.UserModel
             return GetPreferredSize(1.0);
         }
 
-
-        /// <summary>
-        /// The metadata of PNG and JPEG can contain the width of a pixel in millimeters.
-        /// Return the the "effective" dpi calculated as 
-        /// <c>25.4/HorizontalPixelSize</c>
-        /// and 
-        /// <c>25.4/VerticalPixelSize</c>
-        /// .  Where 25.4 is the number of mm in inch.
-        /// </summary>
-        /// <param name="r">The image.</param>
-        /// <returns>the resolution</returns>
-        protected Size GetResolution(Image r)
-        {
-            //int hdpi = 96, vdpi = 96;
-            //double mm2inch = 25.4;
-            return new Size((int)r.HorizontalResolution, (int)r.VerticalResolution);
-        }
-
-        /// <summary>
-        /// Return the dimension of the embedded image in pixel
-        /// </summary>
-        /// <returns>image dimension</returns>
-        public Size GetImageDimension()
-        {
-            InternalWorkbook iwb = (_patriarch.Sheet.Workbook as HSSFWorkbook).Workbook;
-            EscherBSERecord bse = iwb.GetBSERecord(PictureIndex);
-            byte[] data = bse.BlipRecord.PictureData;
-            //int type = bse.BlipTypeWin32;
-
-            using (MemoryStream ms = new MemoryStream(data))
-            {
-                using (Image img = Image.FromStream(ms))
-                {
-                    return img.Size;
-                }
-            }
-        }
         /**
          * Return picture data for this shape
          *
