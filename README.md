@@ -1,4 +1,4 @@
-Fork of NPOI without references to System.Windows.Forms and System.Drawing making it suitable for use with Xamarin.  This is achieved by removing capabilities rather than replacing them.
+Fork of NPOI without references to System.Windows.Forms, System.Drawing and System.Configuration making it suitable for use with Xamarin.  Note that this is achieved by removing capabilities rather than replacing them.
 
 NPOI
 ====
