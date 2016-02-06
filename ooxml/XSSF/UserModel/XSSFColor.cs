@@ -48,13 +48,6 @@ namespace NPOI.XSSF.UserModel
             this.ctColor = new CT_Color();
         }
 
-        public XSSFColor(System.Drawing.Color clr)
-            : this()
-        {
-
-            ctColor.SetRgb((byte)clr.R, (byte)clr.G, (byte)clr.B);
-        }
-
         public XSSFColor(byte[] rgb)
             : this()
         {

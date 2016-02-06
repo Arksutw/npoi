@@ -16,7 +16,6 @@
 ==================================================================== */
 using System;
 using NPOI.OpenXmlFormats.Dml;
-using System.Drawing;
 using NPOI.Util;
 namespace NPOI.XSSF.UserModel
 {
@@ -61,40 +60,7 @@ namespace NPOI.XSSF.UserModel
             return _r;
         }
 
-        public Color FontColor
-        {
-            get
-            {
-                CT_TextCharacterProperties rPr = GetRPr();
-                if (rPr.IsSetSolidFill())
-                {
-                    CT_SolidColorFillProperties fill = rPr.solidFill;
-
-                    if (fill.IsSetSrgbClr())
-                    {
-                        CT_SRgbColor clr = fill.srgbClr;
-                        byte[] rgb = clr.val;
-                        return Color.FromArgb(0xFF & rgb[0], 0xFF & rgb[1], 0xFF & rgb[2]);
-                    }
-                }
-
-                return Color.FromArgb(0, 0, 0);
-            }
-            set
-            {
-                CT_TextCharacterProperties rPr = GetRPr();
-                CT_SolidColorFillProperties fill = rPr.IsSetSolidFill() ? rPr.solidFill : rPr.AddNewSolidFill();
-                CT_SRgbColor clr = fill.IsSetSrgbClr() ? fill.srgbClr : fill.AddNewSrgbClr();
-                clr.val = (new byte[] { value.R, value.G, value.B });
-
-                if (fill.IsSetHslClr()) fill.UnsetHslClr();
-                if (fill.IsSetPrstClr()) fill.UnsetPrstClr();
-                if (fill.IsSetSchemeClr()) fill.UnsetSchemeClr();
-                if (fill.IsSetScrgbClr()) fill.UnsetScrgbClr();
-                if (fill.IsSetSysClr()) fill.UnsetSysClr();
-            }
-        }
-
+        
         /**
          * @return font size in points or -1 if font size is not Set.
          */

@@ -20,7 +20,6 @@ using NPOI.OpenXmlFormats.Dml.Spreadsheet;
 using System;
 using System.Text;
 using NPOI.XSSF.Model;
-using System.Drawing;
 using NPOI.Util;
 namespace NPOI.XSSF.UserModel
 {
@@ -331,58 +330,6 @@ namespace NPOI.XSSF.UserModel
                 {
                     SetValue(props.buChar.@char);
                     return true;
-                }
-                return false;
-            }
-        }
-        /**
-         *
-         * @return the color of bullet characters within a given paragraph.
-         * A <code>null</code> value means to use the text font color.
-         */
-        public Color BulletFontColor
-        {
-            get
-            {
-                //ParagraphPropertyFetcher<Color> fetcher = new ParagraphPropertyFetcher<Color>(getLevel()){
-                //    public bool fetch(CTTextParagraphProperties props){
-                //        if(props.IsSetBuClr()){
-                //            if(props.GetBuClr().IsSetSrgbClr()){
-                //                CTSRgbColor clr = props.GetBuClr().GetSrgbClr();
-                //                byte[] rgb = clr.GetVal();
-                //                SetValue(new Color(0xFF & rgb[0], 0xFF & rgb[1], 0xFF & rgb[2]));
-                //                return true;
-                //            }
-                //        }
-                //        return false;
-                //    }
-                //};
-                ParagraphPropertyFetcherBulletFontColor fetcher = new ParagraphPropertyFetcherBulletFontColor(Level);
-                fetchParagraphProperty(fetcher);
-                return fetcher.GetValue();
-            }
-            set
-            {
-                CT_TextParagraphProperties pr = _p.IsSetPPr() ? _p.pPr : _p.AddNewPPr();
-                CT_Color c = pr.IsSetBuClr() ? pr.buClr : pr.AddNewBuClr();
-                CT_SRgbColor clr = c.IsSetSrgbClr() ? c.srgbClr : c.AddNewSrgbClr();
-                clr.val = (new byte[] { value.R, value.G, value.B });
-            }
-        }
-        class ParagraphPropertyFetcherBulletFontColor : ParagraphPropertyFetcher<Color>
-        {
-            public ParagraphPropertyFetcherBulletFontColor(int level) : base(level) { }
-            public override bool Fetch(CT_TextParagraphProperties props)
-            {
-                if (props.IsSetBuClr())
-                {
-                    if (props.buClr.IsSetSrgbClr())
-                    {
-                        CT_SRgbColor clr = props.buClr.srgbClr;
-                        byte[] rgb = clr.val;
-                        SetValue(Color.FromArgb(0xFF & rgb[0], 0xFF & rgb[1], 0xFF & rgb[2]));
-                        return true;
-                    }
                 }
                 return false;
             }
