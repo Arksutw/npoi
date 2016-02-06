@@ -165,9 +165,8 @@ namespace NPOI.HSSF.UserModel
         /// <returns>HSSFClientAnchor with the preferred size for this image</returns>
         public IClientAnchor GetPreferredSize(double scaleX, double scaleY)
         {
-            ImageUtils.SetPreferredSize(this, scaleX, scaleY);
-            return ClientAnchor;
-            
+            throw new NotSupportedException("No System.Drawing");
+
         }
 
         /// <summary>

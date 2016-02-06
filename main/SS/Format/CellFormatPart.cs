@@ -20,7 +20,6 @@ namespace NPOI.SS.Format
 
     using NPOI.HSSF.Util;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Collections;
     using System.Text.RegularExpressions;
     using System.Text;
@@ -43,11 +42,9 @@ namespace NPOI.SS.Format
      */
     public class CellFormatPart
     {
-        private Color color;
         private CellFormatCondition condition;
         private CellFormatter format;
         private CellFormatType type;
-        private static Dictionary<String, Color> NAMED_COLORS;
         public static IEqualityComparer<String> CASE_INSENSITIVE_ORDER
                                              = new CaseInsensitiveComparator();
         private class CaseInsensitiveComparator : IEqualityComparer<String>
@@ -73,38 +70,6 @@ namespace NPOI.SS.Format
         }
         static CellFormatPart()
         {
-            NAMED_COLORS = new Dictionary<String, Color>(CASE_INSENSITIVE_ORDER);
-
-            Hashtable colors = HSSFColor.GetIndexHash();
-            foreach (object v in colors.Values)
-            {
-                HSSFColor hc = (HSSFColor)v;
-                Type type = hc.GetType();
-                String name = type.Name;
-                if (name.Equals(name.ToUpper()))
-                {
-                    byte[] rgb = hc.RGB;
-                    Color c = Color.FromArgb(rgb[0], rgb[1], rgb[2]);
-                    if (!NAMED_COLORS.ContainsKey(name))
-                    {
-                        NAMED_COLORS.Add(name, c);
-                    }
-                    if (name.IndexOf('_') > 0)
-                    {
-                        if (!NAMED_COLORS.ContainsKey(name.Replace('_', ' ')))
-                        {
-                            NAMED_COLORS.Add(name.Replace('_', ' '), c);
-                        }
-                    }
-                    if (name.IndexOf("_PERCENT") > 0)
-                    {
-                        if (!NAMED_COLORS.ContainsKey(name.Replace("_PERCENT", "%").Replace('_', ' ')))
-                        {
-                            NAMED_COLORS.Add(name.Replace("_PERCENT", "%").Replace('_', ' '), c);
-                        }
-                    }
-                }
-            }
             // A condition specification
             String condition = "([<>=]=?|!=|<>)    # The operator\n" +
                     "  \\s*([0-9]+(?:\\.[0-9]*)?)\\s*  # The constant to test against\n";
@@ -200,7 +165,6 @@ namespace NPOI.SS.Format
             {
                 throw new ArgumentException("Unrecognized format: " + "\"" + desc + "\"");
             }
-            color = GetColor(m);
             condition = GetCondition(m);
             type = GetCellFormatType(m);
             format = GetFormatter(m);
@@ -258,27 +222,6 @@ namespace NPOI.SS.Format
             }
             throw new ArgumentException(
                     "\"" + marker + "\" not found in \"" + pat.ToString() + "\"");
-        }
-
-        /**
-         * Returns the color specification from the matcher, or <tt>null</tt> if
-         * there is none.
-         *
-         * @param m The matcher for the format part.
-         *
-         * @return The color specification or <tt>null</tt>.
-         */
-        private static Color GetColor(Match m)
-        {
-            String cdesc = m.Groups[(COLOR_GROUP)].Value.ToUpper();
-            if (cdesc == null || cdesc.Length == 0)
-                return Color.Empty;
-            Color c = Color.Empty;
-            if (NAMED_COLORS.ContainsKey(cdesc))
-                c = NAMED_COLORS[(cdesc)];
-            //if (c == null)
-            //    logger.Warning("Unknown color: " + quote(cdesc));
-            return c;
         }
 
         /**
@@ -433,18 +376,15 @@ namespace NPOI.SS.Format
         {
             bool applies = Applies(value);
             String text;
-            Color textColor;
             if (applies)
             {
                 text = format.Format(value);
-                textColor = color;
             }
             else
             {
                 text = format.SimpleFormat(value);
-                textColor = Color.Empty;
             }
-            return new CellFormatResult(applies, text, textColor);
+            return new CellFormatResult(applies, text);
         }
 
         /**

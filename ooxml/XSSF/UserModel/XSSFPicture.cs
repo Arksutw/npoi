@@ -229,48 +229,9 @@ namespace NPOI.XSSF.UserModel
          */
         public IClientAnchor GetPreferredSize(double scaleX, double scaleY)
         {
-            Size dim = ImageUtils.SetPreferredSize(this, scaleX, scaleY);
-            CT_PositiveSize2D size2d = ctPicture.spPr.xfrm.ext;
-            size2d.cx = (dim.Width);
-            size2d.cy = (dim.Height);
-            return ClientAnchor;
+            throw new NotSupportedException("No System.Drawing");
         }
-        /**
-         * Return the dimension of this image
-         *
-         * @param part the namespace part holding raw picture data
-         * @param type type of the picture: {@link Workbook#PICTURE_TYPE_JPEG},
-         * {@link Workbook#PICTURE_TYPE_PNG} or {@link Workbook#PICTURE_TYPE_DIB}
-         *
-         * @return image dimension in pixels
-         */
-        protected static Size GetImageDimension(PackagePart part, PictureType type)
-        {
-            try
-            {
-                //return Image.FromStream(part.GetInputStream()).Size;
-                //java can only read png,jpeg,dib image
-                //C# read the image that format defined by PictureType , maybe.
-                return ImageUtils.GetImageDimension(part.GetInputStream());
-            }
-            catch (IOException e)
-            {
-                //return a "singulariry" if ImageIO failed to read the image
-                logger.Log(POILogger.WARN, e);
-                return new Size();
-            }
-        }
-        /**
-         * Return the dimension of the embedded image in pixel
-         *
-         * @return image dimension in pixels
-         */
-        public Size GetImageDimension()
-        {
-            XSSFPictureData picData = PictureData as XSSFPictureData;
-            return GetImageDimension(picData.GetPackagePart(), picData.PictureType);
-        }
-
+        
         protected internal override NPOI.OpenXmlFormats.Dml.Spreadsheet.CT_ShapeProperties GetShapeProperties()
         {
             return ctPicture.spPr;

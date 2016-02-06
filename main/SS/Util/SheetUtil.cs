@@ -20,7 +20,6 @@ namespace NPOI.SS.Util
     using System;
 
     using NPOI.SS.UserModel;
-    using System.Drawing;
     using System.Collections.Generic;
 
     /**
@@ -277,154 +276,7 @@ namespace NPOI.SS.Util
          */
         public static double GetCellWidth(ICell cell, int defaultCharWidth, DataFormatter formatter, bool useMergedCells)
         {
-            ISheet sheet = cell.Sheet;
-            IWorkbook wb = sheet.Workbook;
-            IRow row = cell.Row;
-            int column = cell.ColumnIndex;
-
-            int colspan = 1;
-            for (int i = 0; i < sheet.NumMergedRegions; i++)
-            {
-                CellRangeAddress region = sheet.GetMergedRegion(i);
-                if (ContainsCell(region, row.RowNum, column))
-                {
-                    if (!useMergedCells)
-                    {
-                        // If we're not using merged cells, skip this one and move on to the next.
-                        return -1;
-                    }
-                    cell = row.GetCell(region.FirstColumn);
-                    colspan = 1 + region.LastColumn - region.FirstColumn;
-                }
-            }
-
-            ICellStyle style = cell.CellStyle;
-            CellType cellType = cell.CellType;
-            IFont defaultFont = wb.GetFontAt((short)0);
-            Font windowsFont = IFont2Font(defaultFont);
-            // for formula cells we compute the cell width for the cached formula result
-            if (cellType == CellType.Formula) cellType = cell.CachedFormulaResultType;
-
-            IFont font = wb.GetFontAt(style.FontIndex);
-
-            //AttributedString str;
-            //TextLayout layout;
-
-            double width = -1;
-            using (Bitmap bmp = new Bitmap(1,1))
-            using (Graphics g = Graphics.FromImage(bmp))
-            {
-                if (cellType == CellType.String)
-                {
-                    IRichTextString rt = cell.RichStringCellValue;
-                    String[] lines = rt.String.Split("\n".ToCharArray());
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        String txt = lines[i] + defaultChar;
-
-                        //str = new AttributedString(txt);
-                        //copyAttributes(font, str, 0, txt.length());
-                        windowsFont = IFont2Font(font);
-                        if (rt.NumFormattingRuns > 0)
-                        {
-                            // TODO: support rich text fragments
-                        }
-
-                        //layout = new TextLayout(str.getIterator(), fontRenderContext);
-                        if (style.Rotation != 0)
-                        {
-                            /*
-                             * Transform the text using a scale so that it's height is increased by a multiple of the leading,
-                             * and then rotate the text before computing the bounds. The scale results in some whitespace around
-                             * the unrotated top and bottom of the text that normally wouldn't be present if unscaled, but
-                             * is added by the standard Excel autosize.
-                             */
-                            //AffineTransform trans = new AffineTransform();
-                            //trans.concatenate(AffineTransform.getRotateInstance(style.Rotation*2.0*Math.PI/360.0));
-                            //trans.concatenate(
-                            //    AffineTransform.getScaleInstance(1, fontHeightMultiple)
-                            //    );
-                            double angle = style.Rotation * 2.0 * Math.PI / 360.0;
-                            SizeF sf = g.MeasureString(txt, windowsFont);
-                            double x1 = Math.Abs(sf.Height * Math.Sin(angle));
-                            double x2 = Math.Abs(sf.Width * Math.Cos(angle));
-                            double w = Math.Round(x1 + x2, 0, MidpointRounding.ToEven);
-                            width = Math.Max(width, (w / colspan / defaultCharWidth) * 2 + cell.CellStyle.Indention);
-                            //width = Math.Max(width,
-                            //                 ((layout.getOutline(trans).getBounds().getWidth()/colspan)/defaultCharWidth) +
-                            //                 cell.getCellStyle().getIndention());
-                        }
-                        else
-                        {
-                            //width = Math.Max(width,
-                            //                 ((layout.getBounds().getWidth()/colspan)/defaultCharWidth) +
-                            //                 cell.getCellStyle().getIndention());
-                            double w = Math.Round(g.MeasureString(txt, windowsFont).Width, 0, MidpointRounding.ToEven);
-                            width = Math.Max(width, (w / colspan / defaultCharWidth) * 2 + cell.CellStyle.Indention);
-                        }
-                    }
-                }
-                else
-                {
-                    String sval = null;
-                    if (cellType == CellType.Numeric)
-                    {
-                        // Try to get it formatted to look the same as excel
-                        try
-                        {
-                            sval = formatter.FormatCellValue(cell, dummyEvaluator);
-                        }
-                        catch (Exception)
-                        {
-                            sval = cell.NumericCellValue.ToString();
-                        }
-                    }
-                    else if (cellType == CellType.Boolean)
-                    {
-                        sval = cell.BooleanCellValue.ToString().ToUpper();
-                    }
-                    if (sval != null)
-                    {
-                        String txt = sval + defaultChar;
-                        //str = new AttributedString(txt);
-                        //copyAttributes(font, str, 0, txt.length());
-                        windowsFont = IFont2Font(font);
-                        //layout = new TextLayout(str.getIterator(), fontRenderContext);
-                        if (style.Rotation != 0)
-                        {
-                            /*
-                             * Transform the text using a scale so that it's height is increased by a multiple of the leading,
-                             * and then rotate the text before computing the bounds. The scale results in some whitespace around
-                             * the unrotated top and bottom of the text that normally wouldn't be present if unscaled, but
-                             * is added by the standard Excel autosize.
-                             */
-                            //AffineTransform trans = new AffineTransform();
-                            //trans.concatenate(AffineTransform.getRotateInstance(style.getRotation()*2.0*Math.PI/360.0));
-                            //trans.concatenate(
-                            //    AffineTransform.getScaleInstance(1, fontHeightMultiple)
-                            //    );
-                            //width = Math.max(width,
-                            //                 ((layout.getOutline(trans).getBounds().getWidth()/colspan)/defaultCharWidth) +
-                            //                 cell.getCellStyle().getIndention());
-                            double angle = style.Rotation * 2.0 * Math.PI / 360.0;
-                            SizeF sf = g.MeasureString(txt, windowsFont);
-                            double x1 = sf.Height * Math.Sin(angle);
-                            double x2 = sf.Width * Math.Cos(angle);
-                            double w = Math.Round(x1 + x2, 0, MidpointRounding.ToEven);
-                            width = Math.Max(width, (w / colspan / defaultCharWidth) * 2 + cell.CellStyle.Indention);
-                        }
-                        else
-                        {
-                            //width = Math.max(width,
-                            //                 ((layout.getBounds().getWidth()/colspan)/defaultCharWidth) +
-                            //                 cell.getCellStyle().getIndention());
-                            double w = Math.Round(g.MeasureString(txt, windowsFont).Width, 0, MidpointRounding.ToEven);
-                            width = Math.Max(width, (w * 1.0 / colspan / defaultCharWidth) * 2 + cell.CellStyle.Indention);
-                        }
-                    }
-                }
-            }
-            return width;
+            throw new NotSupportedException("No System.Drawing");
         }
 
 
@@ -446,28 +298,6 @@ namespace NPOI.SS.Util
         //    if (font.Underline == (byte)FontUnderlineType.SINGLE) str.AddAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, startIdx, endIdx);           
         //}
 
-        /// <summary>
-        /// Convert HSSFFont to Font.
-        /// </summary>
-        /// <param name="font1">The font.</param>
-        /// <returns></returns>
-        internal static Font IFont2Font(IFont font1)
-        {
-            FontStyle style = FontStyle.Regular;
-            if (font1.Boldweight == (short)FontBoldWeight.Bold)
-            {
-                style |= FontStyle.Bold;
-            }
-            if (font1.IsItalic)
-                style |= FontStyle.Italic;
-            if (font1.Underline == FontUnderlineType.Single)
-            {
-                style |= FontStyle.Underline;
-            }
-            Font font = new Font(font1.FontName, font1.FontHeightInPoints, style, GraphicsUnit.Point);
-            return font;
-            //return new System.Drawing.Font(font1.FontName, font1.FontHeightInPoints);
-        }
         public static bool ContainsCell(CellRangeAddress cr, int rowIx, int colIx)
         {
             if (cr.FirstRow <= rowIx && cr.LastRow >= rowIx

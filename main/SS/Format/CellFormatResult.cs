@@ -17,7 +17,6 @@
 namespace NPOI.SS.Format
 {
     using System;
-    using System.Drawing;
 
 
 
@@ -33,7 +32,6 @@ namespace NPOI.SS.Format
     {
         private bool _applies;
         private string _text;
-        private Color _textcolor;
         /**
          * This is <tt>true</tt> if no condition was given that applied to the
          * value, or if the condition is satisfied.  If a condition is relevant, and
@@ -54,27 +52,16 @@ namespace NPOI.SS.Format
         }
 
         /**
-         * The color the format Sets, or <tt>null</tt> if the format Sets no color.
-         * This will always be <tt>null</tt> if {@link #applies} is <tt>false</tt>.
-         */
-        public Color TextColor
-        {
-            get{return _textcolor;}
-            set{_textcolor=value;}
-        }
-
-        /**
          * Creates a new format result object.
          *
          * @param applies   The value for {@link #applies}.
          * @param text      The value for {@link #text}.
          * @param textColor The value for {@link #textColor}.
          */
-        public CellFormatResult(bool applies, String text, Color textColor)
+        public CellFormatResult(bool applies, String text)
         {
             this.Applies = applies;
             this.Text = text;
-            this.TextColor = (applies ? textColor : Color.Empty);
         }
     }
 }
