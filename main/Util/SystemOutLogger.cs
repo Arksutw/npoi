@@ -18,7 +18,6 @@
 namespace NPOI.Util
 {
     using System;
-    using System.Configuration;
     using System.Globalization;
     /// <summary>
     /// A logger class that strives to make it as easy as possible for
@@ -74,18 +73,7 @@ namespace NPOI.Util
         /// <returns></returns>
         public override bool Check(int level)
         {
-            int currentLevel;
-            try
-            {
-                string temp = ConfigurationManager.AppSettings["poi.log.level"];
-                if (string.IsNullOrEmpty(temp))
-                    temp = WARN.ToString(CultureInfo.InvariantCulture);
-                currentLevel = int.Parse(temp, CultureInfo.InvariantCulture);
-            }
-            catch (Exception)
-            {
-                currentLevel = POILogger.DEBUG;
-            }
+            int currentLevel = WARN;
 
             if (level >= currentLevel)
             {

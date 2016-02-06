@@ -28,7 +28,6 @@
 
 using System;
 using System.Collections;
-using System.Configuration;
 
 namespace NPOI.Util
 {
@@ -83,15 +82,7 @@ namespace NPOI.Util
             //  that our users can set the system property
             //  between class loading and first use
             if(_loggerClassName == null) {
-        	    try {
-        		    _loggerClassName = ConfigurationManager.AppSettings["loggername"];
-        	    } catch(Exception) {}
-            	
-        	    // Use the default logger if none specified,
-        	    //  or none could be fetched
-        	    if(_loggerClassName == null) {
-        		    _loggerClassName = _nullLogger.GetType().Name;
-        	    }
+        	    _loggerClassName = _nullLogger.GetType().Name;
             }
             
             // Short circuit for the null logger, which
