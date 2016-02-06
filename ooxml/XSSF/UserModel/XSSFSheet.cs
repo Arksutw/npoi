@@ -364,7 +364,7 @@ namespace NPOI.XSSF.UserModel
          */
         public void AutoSizeColumn(int column, bool useMergedCells)
         {
-            throw new NotSupportedException("System.Windows.Forms was used here");
+            throw new NotSupportedException("No System.Windows.Forms");
         }
         XSSFDrawing drawing = null;
         /**
