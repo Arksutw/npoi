@@ -19,7 +19,6 @@ namespace NPOI.DDF
     using System;
     using System.IO;
     using System.Text;
-    using System.Drawing;
     using NPOI.Util;
     using ICSharpCode.SharpZipLib.Zip.Compression;
     using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -193,42 +192,6 @@ namespace NPOI.DDF
         }
 
         /// <summary>
-        /// Gets or sets the bounds.
-        /// </summary>
-        /// <value>The bounds.</value>
-        public Rectangle Bounds
-        {
-            get
-            {
-                return new Rectangle(field_3_rcBounds_x1,
-                                     field_3_rcBounds_y1,
-                                     field_3_rcBounds_x2 - field_3_rcBounds_x1,
-                                     field_3_rcBounds_y2 - field_3_rcBounds_y1);
-            }
-            set
-            {
-                field_3_rcBounds_x1 = value.X;
-                field_3_rcBounds_y1 = value.Y;
-                field_3_rcBounds_x2 = value.X + value.Width;
-                field_3_rcBounds_y2 = value.Y + value.Height;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the size EMU.
-        /// </summary>
-        /// <value>The size EMU.</value>
-        public Size SizeEMU
-        {
-            get { return new Size(field_4_ptSize_w, field_4_ptSize_h); }
-            set
-            {
-                field_4_ptSize_w = value.Width;
-                field_4_ptSize_h = value.Height;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the size of the compressed.
         /// </summary>
         /// <value>The size of the compressed.</value>
@@ -261,50 +224,12 @@ namespace NPOI.DDF
         /// </returns>
         public override String ToString()
         {
-            String nl = Environment.NewLine;
-
-            String extraData;
-            using (MemoryStream b = new MemoryStream())
-            {
-                try
-                {
-                    HexDump.Dump(this.field_pictureData, 0, b, 0);
-                    extraData = b.ToString();
-                }
-                catch (Exception e)
-                {
-                    extraData = e.ToString();
-                }
-                return GetType().Name + ":" + nl +
-                        "  RecordId: 0x" + HexDump.ToHex(RecordId) + nl +
-                        "  Version: 0x" + HexDump.ToHex(Version) + '\n' +
-                        "  Instance: 0x" + HexDump.ToHex(Instance) + '\n' +
-                        "  UID: 0x" + HexDump.ToHex(field_1_UID) + nl +
-                        "  Uncompressed Size: " + HexDump.ToHex(field_2_cb) + nl +
-                        "  Bounds: " + Bounds + nl +
-                        "  Size in EMU: " + SizeEMU + nl +
-                        "  Compressed Size: " + HexDump.ToHex(field_5_cbSave) + nl +
-                        "  Compression: " + HexDump.ToHex(field_6_fCompression) + nl +
-                        "  Filter: " + HexDump.ToHex(field_7_fFilter) + nl +
-                        "  Extra Data:" + nl + extraData;
-            }
+            throw new NotSupportedException("No System.Drawing");
         }
 
         public override String ToXml(String tab)
         {
-            String extraData = "";
-            StringBuilder builder = new StringBuilder();
-            builder.Append(tab).Append(FormatXmlRecordHeader(GetType().Name, HexDump.ToHex(RecordId), HexDump.ToHex(Version), HexDump.ToHex(Instance)))
-                    .Append(tab).Append("\t").Append("<UID>0x").Append(HexDump.ToHex(field_1_UID)).Append("</UID>\n")
-                    .Append(tab).Append("\t").Append("<UncompressedSize>0x").Append(HexDump.ToHex(field_2_cb)).Append("</UncompressedSize>\n")
-                    .Append(tab).Append("\t").Append("<Bounds>").Append(Bounds).Append("</Bounds>\n")
-                    .Append(tab).Append("\t").Append("<SizeInEMU>").Append(SizeEMU).Append("</SizeInEMU>\n")
-                    .Append(tab).Append("\t").Append("<CompressedSize>0x").Append(HexDump.ToHex(field_5_cbSave)).Append("</CompressedSize>\n")
-                    .Append(tab).Append("\t").Append("<Compression>0x").Append(HexDump.ToHex(field_6_fCompression)).Append("</Compression>\n")
-                    .Append(tab).Append("\t").Append("<Filter>0x").Append(HexDump.ToHex(field_7_fFilter)).Append("</Filter>\n")
-                    .Append(tab).Append("\t").Append("<ExtraData>").Append(extraData).Append("</ExtraData>\n");
-            builder.Append(tab).Append("</").Append(GetType().Name).Append(">\n");
-            return builder.ToString();
+            throw new NotSupportedException("No System.Drawing");
         }
 
     }
